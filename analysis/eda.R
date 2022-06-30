@@ -15,8 +15,12 @@ length(unique(combo$BASEID)) #there are 12,297 unique beneficiaries
 names(combo)
 summary(combo$PANEL)
 
+#restrict to 2015 enrollees
 only2015 <- combo %>% filter(PANEL=='2015')
 nrow(only2015) #4096 participants
+#restrict to ages 65+
+only2015_65 <- only2015 %>% filter(H_AGE >= 65)
+nrow(only2015_65) #3392 participants
 
 
 only2014 <- combo %>% filter(PANEL=='2014')
