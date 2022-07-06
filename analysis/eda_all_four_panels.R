@@ -11,6 +11,25 @@ combined <- merge(demo, nicoalco, by='BASEID')
 over65 <- combined %>% filter(H_AGE >=65)
 nrow(over65) #10250 participants
 summary(over65$PANEL)
+ggplot(data=over65, aes(x=over65$PANEL)) + 
+  geom_bar() + 
+  geom_text(stat='count', aes(label=..count..), vjust=-0.3) +
+  labs(x="Panel Enrollment Year", y="Count of Beneficiaries", title="MCBS 2015 Panels")
+
+sum(!is.na(over65$D_DOD)) #18 people died based on the date of death criteria
+#want to look into this based on MBSF criteria
+
+
+#### Zipcodes Represented ####
+zipcodes <- unique(over65$H_ZIP)
+length(zipcodes) #2255 zipcodes represented
+library(maps)
+us_states <- map_data("state")
+us_states %>% ggplot(aes(x = long, y = lat, fill = "none", group = group)) + 
+  geom_polygon(color = "black") + 
+  coord_fixed(1.3) +
+  guides(fill = FALSE)
+
 
 #### Demographics ####
 ##### Age ####
@@ -93,7 +112,7 @@ over65$ever_smoked <- recode_factor(over65$ever_smoked,"1"="Yes","2"="No")
 ggplot(data=over65, aes(x=ever_smoked)) + 
   geom_bar() + 
   geom_text(stat='count', aes(label=..count..), vjust=-0.3) +
-  labs(x="Ever smoked", y="Count of Beneficiaries", title="MCBS 2015 Ever Smoking") + xlim("Yes", "No")
+  labs(x="Ever smoked", y="Count of Beneficiaries", title="MCBS 2015 Ever Smoking All Four Panels") + xlim("Yes", "No")
 
 ###### number of years smoking ####
 #96 means that they smoked for less than 1 year
