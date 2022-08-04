@@ -21,7 +21,7 @@ Columns: `BASEID,SURVEYYR,VERSION,EVERSMOK,SMOKNOW,DIDSMOKE,LASTSMOK,HAVSMOKE,DR
 
 | BASEID | SURVEYYR | ... | QID |
 |--------|----------|-----|-----|
-|        |          |     |     |
+| ABC    |          |     | 123 |
 
 ### Medpar cardio hospitalization
 
@@ -29,8 +29,8 @@ Columns: `QID,ADATE,YEAR,cardio`
 
 | QID | ADATE | YEAR | cardio |
 |-----|----------|-----|-----|
-| 123 |          |  2015 |     |
-| 123 |          |  2016 |     |
+| 123 |          |  2015 | True |
+| 123 |          |  2016 | True |
 
 ### MBSF 
 
@@ -42,18 +42,18 @@ Columns: `"zip","year","qid","dodflag","bene_dod","sex","race","age","hmo_mo","h
 | 123 |  2016 |     |
 
 
-## Analytic
+## Final analytic dataset
 
 MBSF x MedPar should be merged on both `QID` and `YEAR`.
 
-|MBSF | MBSF | MedPar | MedPar | MCBS |
+|MBSF cols | MBSF cols | MedPar cols | MedPar cols | MCBS cols |
 |-----|------|--------|--------|------|
 | QID | YEAR | ADATE | cardio | ... |
 | 123 |  2015 |     | True | |
 | 123 |  2016 |     | True | |
 | xyz |  2016 |     | True/False | |
 
-## Initial selections
+### Pre-selection
 
 ```mermaid
 flowchart TB
@@ -61,7 +61,7 @@ flowchart TB
     ID2==>ID3[age >= 65 \n n=TBD]
 ``` 
 
-#### Performing Preliminary EDA
+## Performing Preliminary EDA
 
 
 **Analysis Folder:**
