@@ -53,6 +53,14 @@ MBSF x MedPar should be merged on both `QID` and `YEAR`.
 | 123 |  2016 |     | True | |
 | xyz |  2016 |     | True/False | |
 
+## Initial selections
+
+```mermaid
+flowchart TB
+    ID1[MBSF 2015, 2016 \n n=TBD]==>ID2[hmo_mo == 0 \n n=TBD]
+    ID2==>ID3[age >= 65 \n n=TBD]
+``` 
+
 #### Performing Preliminary EDA
 
 
