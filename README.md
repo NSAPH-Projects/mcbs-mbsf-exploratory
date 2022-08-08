@@ -6,18 +6,24 @@ flowchart LR
     id1([MCBS xwalk])
     
     %% linking nodes
+    
     id2(MCBS)-->id1
     id3(xwalk)-->id1
     id4(MBSF -\n enrollment)-->id7
     id5(MedPar -\n cardio hospitalization)-->id7
+    id8([MCBS \n nicotine/alcohol survey])-->id2
+    id9([MCBS \n continuously enrolled weights])-->id2
     
     %% integration to warehouse
     id1-->id7[(\n\n Analytic Data \n\n)]
 ```
 
 ### MCBS xwalk
+Combined nicoalco.csv and cenwgts.csv to get weights and restrict to beneficiaries continuously enrolled
 
-Columns: `BASEID,SURVEYYR,VERSION,EVERSMOK,SMOKNOW,DIDSMOKE,LASTSMOK,HAVSMOKE,DRQTSMOK,QUITSMOK,DRINKDAY,DRINKSPD,FOURDRNK,QID`
+The weight variable is named `CS1YRWGT` and there are 100 replicate weights for variance estimation named `CS1YR001,CS1YR002,CS1YR003,...,CS1YR100`.
+
+Columns: `BASEID,SURVEYYR,VERSION,EVERSMOK,SMOKNOW,DIDSMOKE,LASTSMOK,HAVSMOKE,DRQTSMOK,QUITSMOK,DRINKDAY,DRINKSPD,FOURDRNK,CS1YRWGT,CS1YR001,CS1YR002,CS1YR003,..., CS1YR100,QID`
 
 | BASEID | SURVEYYR | ... | QID |
 |--------|----------|-----|-----|
@@ -42,6 +48,8 @@ Columns: `"zip","year","qid","dodflag","bene_dod","sex","race","age","hmo_mo","h
 | 123 |  2016 |     |
 
 
+
+
 ## Final analytic dataset
 
 MBSF x MedPar should be merged on both `QID` and `YEAR`.
@@ -58,9 +66,10 @@ MBSF x MedPar should be merged on both `QID` and `YEAR`.
 ```mermaid
 flowchart TB
     ID1[MBSF 2015, 2016 \n n=TBD]==>ID2[hmo_mo == 0 \n n=TBD]
-    ID2==>ID3[age >= 65 \n n=TBD]
+    ID2==>ID3[age >= 65 \n n=33,304,836]
 ``` 
 
+Filtered MBSF 2015/2016 to columns: `
 ## Performing Preliminary EDA
 
 
