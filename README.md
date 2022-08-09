@@ -51,15 +51,13 @@ Columns: `"zip","year","qid","dodflag","bene_dod","sex","race","age","hmo_mo","h
 
 
 ## Final analytic dataset
+Note that many Medicare beneficiaries did not participate in MCBS, so there will be some NULL values in the MCBS columns. Additionally, the MedPar columns are only for CVD events, so if an individual does not have a record of a CVD event in MedPar in 2015 or 2016, the respective columns will be null.
 
-MBSF x MedPar should be merged on both `QID` and `YEAR`.
-
-|MBSF cols | MBSF cols | MedPar cols | MedPar cols | MCBS cols |
-|-----|------|--------|--------|------|
-| QID | YEAR | ADATE | cardio | ... |
-| 123 |  2015 |     | True | |
-| 123 |  2016 |     | True | |
-| xyz |  2016 |     | True/False | |
+| QID | MedPar 2015 | MedPar 2016 | MCBS_2015 | MCBS_2015 Weights | MBSF 2015 | MBSF_2016 |
+|-----|-------------|-------------|-----------|-------------------|-----------|-----------|
+| 1   |             |             |           |                   |           |           |
+| 2   |             |             |           |                   |           |           |
+| 3   |             |             |           |                   |           |           |
 
 ### Pre-selection
 
@@ -85,6 +83,13 @@ Filtered MBSF 2015/2016 to columns: `
 
 
 **Data Folder:**
+
+`mcbs_medpar_mbsf_2015-2016.fst` is the full merged file with 2015 MCBS nicotine alcohol survey/continuous weights, 2015 & 2016 MedPar CVD events, and 2015 & 2016 MBSF denominator data, restricted to age 65+ and non-HMO, in fst format for faster loading using library(fst) and read_fst() in R
+
+
+`mcbs_medpar_mbsf_2015-2016.csv` is the same as the above `mcbs_medpar_mbsf_2015-2016.fst`, but in CSV format to be accessible outside of R
+
+`mcbs_xwalk.csv` combines the MCBS 2015 nicotine and alcohol survey and continuously enrolled beneficiaries and contains both the MCBS BASEIDs and their correspending QIDs
 
 `mcbs_demo_x_mbsf_15-16.csv` combines data from the 2015 MCBS demographic file restricted to 2015 enrollees with the 2015 & 2016 MBSF denominator file
 
