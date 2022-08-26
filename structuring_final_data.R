@@ -18,7 +18,6 @@ library(data.table)
 
 mcbs <- fread("data/mcbs_xwalk.csv")
 colnames(mcbs)[colnames(mcbs) == "QID"] <- "qid"
-colnames(mcbs)[colnames(mcbs) == "SURVEYYR.x"] <- "year"
 mcbs <- mcbs[,"VERSION.x":=NULL]
 mcbs <- mcbs[,"VERSION.y":=NULL]
 mcbs <- mcbs[,"SURVEYYR.y":=NULL]
@@ -74,7 +73,7 @@ head(medpar2016)
 
 medpar <- rbind(medpar2015, medpar2016)
 rm(medpar2015, medpar2016)
-
+gc()
 #### Dataset 1 #### 
 # combining mbsf and mcbs
 
@@ -82,19 +81,20 @@ rm(medpar2015, medpar2016)
 mbsf_mcbs <- merge(mbsf, mcbs, by="qid" ,all =TRUE)
 
 #write dataset 1
-fwrite(mbsf_mcbs, "data/dataset1_mbsf_mcbs.csv")
-write.fst(mbsf_mcbs, "data/dataset1_mbsf_mcbs.fst")
+fwrite(mbsf_mcbs, "data/final_outputs/mbsf_mcbs_2015_2016.csv")
+write.fst(mbsf_mcbs, "data/final_outputs/mbsf_mcbs_2015_2016.fst")
 
 
 #### Dataset 2 ####
 #filter out HMO beneficiaries
-mbsf_ffs <- mbsf %>% filter("hmo_mo"==0)
+mbsf_ffs <- mbsf %>% filter(hmo_mo =="0")
 rm(mbsf, mbsf_mcbs)
+#gc()
 mbsf_ffs_medpar <- merge(mbsf_ffs, medpar, by=c("qid", "year"), all.x=TRUE)
 mbsf_ffs_medpar_mcbs <- merge(mbsf_ffs_medpar, mcbs, by="qid", all.x=TRUE)
 
 
 #write dataset 2
-fwrite(mbsf_mcbs, "data/dataset2_mbsf_medpar_mcbs.csv")
-write.fst(mbsf_mcbs, "data/dataset2_mbsf_medpar_mcbs.fst")
+fwrite(mbsf_ffs_medpar_mcbs, "data/final_outputs/mbsf_medpar_mcbs_2015_2016.csv")
+write.fst(mbsf_ffs_medpar_mcbs, "data/final_outputs/mbsf_medpar_mcbs_2015_2016.fst")
 
