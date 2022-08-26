@@ -1,0 +1,130 @@
+---
+title: "MCBS-MBSF QC and Exploratory"
+author: "Lauren Flynn"
+date: "8/22/2022"
+output: html_document
+---
+
+```{r load libs and data}
+#load libraries
+library(dplyr)
+library(lubridate)
+library(fst)
+library(ggplot2)
+library(data.table)
+#setwd("/n/dominici_nsaph_l3/Lab/projects/mcbs-mbsf-exploratory")
+
+d1 <- read.fst("data/dataset1_mbsf_mcbs.fst")
+d2 <- read.fst("data/dataset2_mbsf_medpar_mcbs.fst")
+```
+
+
+Checking number of individuals
+```{r population counts}
+#count of person-years in each dataset
+d1_count_py <- nrow(d1) #89,402,863 person-years
+d2_count_py <- nrow(d2) #58,820,353 person-years
+
+#count of unique individuals in each dataset
+d1_count_people <- length(unique(d1$qid)) #45,697,740 individuals
+d2_count_people <- length(unique(d2$qid)) #30,853,802 individuals
+
+#difference between d1 and d2 is that d2 filters out HMO beneficiaries
+hmo_individuals <- d1_count_people - d2_count_people #14,843,938 HMO beneficiaries
+
+#counting deaths in each dataset
+d1_deaths <- d1 %>% filter(death==1)
+nrow(d1_deaths) #3,929,413 deaths
+length(unique(d1_deaths$qid))
+#verifying the death variables are the same
+d1_deaths2 <- d1 %>% filter(dead==TRUE)
+nrow(d1_deaths2) #3,929,413 deaths
+d1_deaths3 <- d1 %>% filter(dodflag=="V")
+nrow(d1_deaths3) #3,927,340 deaths
+d1_deaths4 <- d1 %>% filter(bene_dod!="")
+nrow(d1_deaths4) #3,929,413 deaths
+
+d2_deaths <- d2 %>% filter(death==1)
+nrow(d2_deaths) #2,724,425 deaths
+#verifying the death variables are the same
+d2_deaths2 <- d2 %>% filter(dead==TRUE)
+nrow(d2_deaths2) #2,724,425 deaths
+d2_deaths3 <- d2 %>% filter(dodflag=="V")
+nrow(d2_deaths3) #2,722,975 deaths
+d2_deaths4 <- d2 %>% filter(bene_dod!="")
+nrow(d2_deaths4) #2,724,425 deaths
+
+
+#checking how many deaths occur within MCBS cohort
+d1_deaths_mcbs <- d1 %>% filter(death==1 & mcbs_indicator=="1")
+d1_deaths_mcbs_smokers <- d1_deaths_mcbs %>% filter(EVERSMOK=="1") #320 deaths
+d1_deaths_mcbs_drinkers <- d1_deaths_mcbs %>% filter(!(DRINKDAY %in% c("D","R","",".","NA","0"))) #133 deaths d1
+length(unique(d1_deaths_mcbs_smokers$qid)) #confirmation that 320 individuals are unique
+length(unique(d1_deaths_mcbs_drinkers$qid)) #confirmation that 133 individuals are unique
+
+
+
+d2_deaths_mcbs <- d2 %>% filter(death==1 & mcbs_indicator=="1") #420 deaths
+length(unique(d2_deaths_mcbs$qid))
+d2_deaths_mcbs_smokers <- d2_deaths_mcbs %>% filter(EVERSMOK=="1") #206 deaths
+d2_deaths_mcbs_drinkers <- d2_deaths_mcbs %>% filter(!(DRINKDAY %in% c("D","R","",".","NA","0"))) #85 deaths
+length(unique(d2_deaths_mcbs_smokers$qid)) #confirmation that 206 individuals are unique
+length(unique(d2_deaths_mcbs_drinkers$qid)) #confirmation that 85 individuals are unique
+
+#looking at deaths among MCBS cohort
+nrow(d1_deaths_mcbs) #694 deaths among FFS beneficiaries
+d2_deaths_mcbs <- d2 %>% filter(death==1 & mcbs_indicator=="1")
+nrow(d2_deaths_mcbs) #480 deaths among FFS beneficiaries
+
+#number of cvd events
+cvd_count <- d2 %>% filter(cardio=="TRUE" & count_cvd_events != "NA")
+nrow(cvd_count) #8,186,915 person-years have CVD events
+length(unique(cvd_count$qid)) #6,984,545 unique individuals had CVD events over the time period
+sum(!is.na(d2$count_cvd_events)) #total of 8,186,915 CVD events?
+
+rm(d1_deaths,d1_deaths2, d1_deaths3, d1_deaths4, d2_deaths,d2_deaths2, d2_deaths3, d2_deaths4)
+gc()
+
+
+#data demographic makeup
+#1 = male and 2 = female https://resdac.org/cms-data/variables/sex
+table(d1$sex) #39,544,674 male person-years; 49,856,033 female person-years
+table(d2$sex) #26,465,170 male person-years; 32,355,183 female person-years
+
+
+#dual eligibility for Medicare and Medicaid
+table(d1$dual) #0 = 78,043,016; 1 = 11,357,691
+table(d2$dual) #0 = 52,077,217; 1 = 6,743,136
+
+table(d1$age) #85,592 114 y/os seems a bit high?
+table(d2$age) # 85,581 114 y/os?
+ggplot(data=d1, aes(x=age)) + geom_bar() + geom_text(stat='count', aes(label=..count..), vjust=-0.3)
+```
+Would it make sense to have 30 million people lost from d1 to d2? About 30 million HMO?
+
+```{r d1 quality control}
+ben2015 <- d1 %>% select("qid", "year") %>% filter(year==2015)
+setequal(d1$year.x, d1$year.y)
+```
+
+```{r d2 quality control}
+
+```
+
+
+
+
+h2("Visualizations")
+Here I want to make a histogram which has the MCBS beneficiaries 1) who died and ever smoked vs never smoked and 2) who died and ever drank vs never drank
+```{r}
+d1_mcbs <- d1_deaths_mcbs %>% filter(EVERSMOK != "")
+
+
+ggplot(data=d1_mcbs, aes(x=EVERSMOK)) + 
+  geom_bar() + 
+  geom_text(stat='count', aes(label=..count..), vjust=-0.3) 
+
+
+
+```
+
