@@ -1,4 +1,7 @@
 ## MCBS Data Merged with MBSF Data
+Here we create two datasets, the first one a larger dataset (n=89,402,863 person-years) with the primary outcome of death (n=3,929,413) as reported by MBSF, and including the MCBS cohort information from 2015. The second dataset is slightly smaller (n=58,820,353 person-years) with the primary outcome of CVD hospitalization as reported by MedPar (n=8,186,915 person-years with CVD events)--this dataset contains a subset of individuals from the first dataset, subsetted based on the criteria that they were not enrolled in the HMO plan of Medicare during 2015-2016.
+
+We used the MBSF data from 2015 and 2016 (the 2016 MBSF data was subsetted to just the individuals that were also enrolled in 2015). Similarly, the MedPar data for 2015 and 2016 was used, matched to the MBSF data. MCBS data for 2015 was used, and it attached to its corresponding individual from MBSF, so the same MCBS survey result may be in two rows of the data (the individual in 2015 and in 2016, if applicable).
 
 ```mermaid
 flowchart LR
@@ -29,6 +32,8 @@ Columns: `BASEID,SURVEYYR,VERSION,EVERSMOK,SMOKNOW,DIDSMOKE,LASTSMOK,HAVSMOKE,DR
 |--------|----------|-----|-----|
 | ABC    |          |     | 123 |
 
+We have only selected the MCBS results from 2015 because the MCBS surveys went through a major design overhaul to include more detailed nicotine and alcohol questions starting in 2015. Please note that there are several questions that ascertain the duration of drinking and smoking, but that the questionnaires follow certain patterns in which certain questions are only asked under certain logical scenarios, so the number of responses is low. For more information about the MCBS survey questions, please consult the data dictionary in the data folder.
+
 ### Medpar cardio hospitalization
 
 Columns: `QID,ADATE,YEAR,cardio`
@@ -47,6 +52,7 @@ Columns: `"zip","year","qid","dodflag","bene_dod","sex","race","age","hmo_mo","h
 | 123 |  2015 |     |
 | 123 |  2016 |     |
 
+Included in the datasets are the MBSF 2015 beneficiaries, as well as the 2016 beneficiaries, if they were also enrolled in 2015.
 
 
 
@@ -67,7 +73,6 @@ flowchart TB
     ID2==>ID3[age >= 65 \n n=33,304,836]
 ``` 
 
-Filtered MBSF 2015/2016 to columns: `
 ## Performing Preliminary EDA
 
 
