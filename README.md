@@ -3,6 +3,29 @@ Here we create two datasets, the first one a larger dataset (n=89,402,863 person
 
 We used the MBSF data from 2015 and 2016 (the 2016 MBSF data was subsetted to just the individuals that were also enrolled in 2015). Similarly, the MedPar data for 2015 and 2016 was used, matched to the MBSF data. MCBS data for 2015 was used, and it attached to its corresponding individual from MBSF, so the same MCBS survey result may be in two rows of the data (the individual in 2015 and in 2016, if applicable).
 
+
+
+#### Dataset: MBSF, MCBS; Outcome: Death
+
+```mermaid
+flowchart LR
+    %% creating nodes
+    id1([MCBS xwalk])
+    
+    %% linking nodes
+    
+    id2(MCBS)-->id1
+    id3(xwalk)-->id1
+    id4(MBSF -\n enrollment)-->id7
+    id8([MCBS \n nicotine/alcohol survey])-->id2
+    id9([MCBS \n continuously enrolled weights])-->id2
+    
+    %% integration to warehouse
+    id1-->id7[(\n\n Analytic Data: Outcome Death \n\n)]
+```
+
+#### Dataset: MBSF, MedPar, MCBS; Outcome: CVD Hospitalization
+
 ```mermaid
 flowchart LR
     %% creating nodes
@@ -18,7 +41,7 @@ flowchart LR
     id9([MCBS \n continuously enrolled weights])-->id2
     
     %% integration to warehouse
-    id1-->id7[(\n\n Analytic Data \n\n)]
+    id1-->id7[(\n\n Analytic Data: Outcome CVD Hospitalizations \n\n)]
 ```
 
 ### MCBS xwalk
@@ -66,11 +89,17 @@ Note that many Medicare beneficiaries did not participate in MCBS, so there will
 | 3   |             |             |           |                   |           |           |
 
 ### Pre-selection
-
+Dataset: Outcome Death
 ```mermaid
 flowchart TB
-    ID1[MBSF 2015, 2016 \n n=TBD]==>ID2[hmo_mo == 0 \n n=TBD]
-    ID2==>ID3[age >= 65 \n n=33,304,836]
+    ID1[MBSF 2015, 2016]==>ID2[age >= 65]
+``` 
+
+Dataset: Outcome CVD Hospitalizations
+```mermaid
+flowchart TB
+    ID1[MBSF 2015, 2016]==>ID2[hmo_mo == 0]
+    ID2==>ID3[age >= 65]
 ``` 
 
 ## Performing Preliminary EDA
@@ -88,6 +117,10 @@ flowchart TB
 
 
 **Data Folder:**
+
+Final Outputs folder: contains the merged files in fst and csv formats. For the outcome of mortality, please use the file: `mbsf_mcbs_2015_2016.csv/fst`
+For the outcome of CVD hospitalizations, please use the file `mbsf_medpar_mcbs_2015_2016.csv/fst`. FST files load quickly in R, but they don't work in Python. In R, you can use the fst library from CRAN to quickly load the data.
+
 
 `mcbs_medpar_mbsf_2015-2016.fst` is the full merged file with 2015 MCBS nicotine alcohol survey/continuous weights, 2015 & 2016 MedPar CVD events, and 2015 & 2016 MBSF denominator data, restricted to age 65+ and non-HMO, in fst format for faster loading using library(fst) and read_fst() in R
 
