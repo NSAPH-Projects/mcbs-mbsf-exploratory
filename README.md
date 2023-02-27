@@ -1,5 +1,32 @@
 ## MCBS Data Merged with MBSF Data
 
+
+### Summary
+
+This repository provides two data sets, one with the outcome of mortality and the other with the outcome of CVD hospitalization. There are many demographic covariates from the MBSF files, and for a small selection of beneficiaries, there are also survey questions focusing on nicotine and alcohol intake from the MCBS survey files. The CVD (cardiovascular disease) hospitalizations data set contains the subset of the mortality data set beneficiaries for which we have hospitalization data from MedPar. For more information about data sources, please see the [NSAPH handbook](https://nsaph.info/data.html). 
+
+The data selected includes MBSF demographic and mortality data from 2015 and 2016, MedPar data for 2015 and 2016, and MCBS data for 2015. Each row in the data set represents one person-year. A beneficiary included in 2015 will also have data for 2016 if they have not been censored.
+
+#### Final Datasets
+
+- MBSF 2015/2016 and MCBS 2015 Merged mbsf_mcbs_2015_2016.csv/fst (outcome=mortality)
+
+This dataset includes Medicare beneficiaries who were enrolled in 2015, as well as the Medicare beneficiaries enrolled in 2016 that were previously enrolled in 2015. 12,298 beneficiaries have additional data about nicotine and alcohol from the MCBS survey file, and these results are combined with the demographic information from the MBSF files. 
+
+- Medpar 2015/2016, MBSF 2015/2016 and MCBS 2015 Merged mbsf_medpar_mcbs_2015_2016.csv/fst (outcome=CVD hospitalization)
+
+This data set contains a subset of beneficiaries from the first data set (including both the MBSF and the MCBS data) for which we have data regarding CVD hospitalization (i.e., the individuals did not have insurance HMO plans). For each year, if a CVD hospitalization occurs, the date of the first hospitalization is recorded.
+
+### Dataset Generation
+
+#### Input Datasets
+
+- MCBS 2015 Data
+
+- MBSF 2015 and 2016 Data
+
+- MedPar 2015 and 2016 Data
+
 ```mermaid
 flowchart LR
     %% creating nodes
@@ -69,8 +96,6 @@ flowchart TB
     ID2==>ID3[age >= 65 \n n=33,304,836]
 ``` 
 
-Filtered MBSF 2015/2016 to columns: `
-## Performing Preliminary EDA
 
 
 **Analysis Folder:**
